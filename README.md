@@ -1,1 +1,1 @@
-# AI-RECIPE
+# MealCraft-AI
