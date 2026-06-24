@@ -31,19 +31,23 @@ export const recipeService = {
 
       const { ingredients = '', cuisine = 'Any', mealType = 'Any', dietType = 'Any' } = params;
 
-      // Filter local mock recipes to see if we have an exact match first
-      const matches = mockRecipes.filter(r => {
-        const cuisineMatch = cuisine === 'Any' || r.cuisine.toLowerCase() === cuisine.toLowerCase();
-        const mealMatch = mealType === 'Any' || r.mealType.toLowerCase() === mealType.toLowerCase();
-        const dietMatch = dietType === 'Any' || r.dietType.toLowerCase() === dietType.toLowerCase();
-        return cuisineMatch && mealMatch && dietMatch;
-      });
+      // If the user provided specific ingredients, skip the hardcoded mock recipes 
+      // so we can dynamically generate a custom recipe based on their ingredients.
+      if (!ingredients || ingredients.trim().length === 0) {
+        // Filter local mock recipes to see if we have an exact match first
+        const matches = mockRecipes.filter(r => {
+          const cuisineMatch = cuisine === 'Any' || r.cuisine.toLowerCase() === cuisine.toLowerCase();
+          const mealMatch = mealType === 'Any' || r.mealType.toLowerCase() === mealType.toLowerCase();
+          const dietMatch = dietType === 'Any' || r.dietType.toLowerCase() === dietType.toLowerCase();
+          return cuisineMatch && mealMatch && dietMatch;
+        });
 
-      if (matches.length > 0) {
-        // Return a matching mock recipe
-        const recipe = matches[Math.floor(Math.random() * matches.length)];
-        toast.success(`Generated ${recipe.title} (Demo Mode)`);
-        return { recipe };
+        if (matches.length > 0) {
+          // Return a matching mock recipe
+          const recipe = matches[Math.floor(Math.random() * matches.length)];
+          toast.success(`Generated ${recipe.title} (Demo Mode)`);
+          return { recipe };
+        }
       }
 
       // If no mock recipes match, dynamically generate a custom recipe based on the user's input ingredients!
