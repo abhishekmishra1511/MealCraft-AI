@@ -41,7 +41,7 @@ export const generateRecipePrompt = async (ingredients, dietType, cuisine, mealT
           content: prompt,
         },
       ],
-      model: 'llama3-8b-8192', // Or 'mixtral-8x7b-32768' depending on availability
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.7,
     });
 
