@@ -7,7 +7,7 @@ import { generateRecipePrompt } from '../services/groqService.js';
 // @access  Public (or Private depending on requirements, let's keep it accessible if no token, but use user's groceries if token exists)
 export const generateRecipe = async (req, res) => {
   try {
-    const { ingredients, diet, cuisine, cookTime, useKitchenGroceries } = req.body;
+    const { ingredients, dietType, mealType, cuisine, useKitchenGroceries } = req.body;
     let kitchenGroceries = [];
 
     // If user is authenticated and wants to use kitchen groceries
@@ -16,7 +16,7 @@ export const generateRecipe = async (req, res) => {
       kitchenGroceries = user.kitchenGroceries || [];
     }
 
-    const recipeData = await generateRecipePrompt(ingredients, diet, cuisine, cookTime, kitchenGroceries);
+    const recipeData = await generateRecipePrompt(ingredients, dietType, cuisine, mealType, kitchenGroceries);
 
     res.status(200).json({ recipe: recipeData });
   } catch (error) {
@@ -29,7 +29,8 @@ export const generateRecipe = async (req, res) => {
 // @access  Private
 export const saveRecipe = async (req, res) => {
   try {
-    const { title, ingredients, instructions, nutrition, cookingTime, difficulty } = req.body;
+    const payload = req.body.recipe ? req.body.recipe : req.body;
+    const { title, ingredients, instructions, nutrition, cookingTime, prepTime, cookTime, totalTime, difficulty } = payload;
 
     const recipe = await Recipe.create({
       userId: req.user._id,
@@ -37,7 +38,7 @@ export const saveRecipe = async (req, res) => {
       ingredients,
       instructions,
       nutrition,
-      cookingTime,
+      cookingTime: cookingTime || (totalTime ? `${totalTime} minutes` : `${(prepTime || 0) + (cookTime || 0)} minutes`),
       difficulty,
     });
 
