@@ -20,9 +20,9 @@ export const generateRecipePrompt = async (ingredients, diet, cuisine, cookTime,
       Cuisine: ${cuisine || 'Any'}
       Cooking Time: ${cookTime || 'Any'}
       
-      Respond STRICTLY with a JSON object containing the following keys and no extra text or markdown code blocks around the JSON:
+      Respond STRICTLY with a JSON object containing the exact following keys and no extra text or markdown code blocks:
       {
-        "title": "String (Recipe Name)",
+        "title": "String (A descriptive name for the recipe)",
         "ingredients": ["Array of Strings (Measurements and ingredients)"],
         "instructions": ["Array of Strings (Step by step instructions)"],
         "nutrition": { "calories": "String", "protein": "String", "carbs": "String", "fat": "String" },
@@ -48,7 +48,13 @@ export const generateRecipePrompt = async (ingredients, diet, cuisine, cookTime,
     try {
       // In case Groq adds markdown formatting like ```json ... ```
       const cleanedJSON = responseContent.replace(/```json/gi, '').replace(/```/g, '').trim();
-      return JSON.parse(cleanedJSON);
+      const parsed = JSON.parse(cleanedJSON);
+      
+      if (!parsed.title) {
+        parsed.title = parsed.name || parsed.recipeName || parsed.dishName || 'Generated Recipe';
+      }
+      
+      return parsed;
     } catch (parseError) {
       console.error('Failed to parse Groq response as JSON:', responseContent);
       throw new Error('Invalid response format from AI.');

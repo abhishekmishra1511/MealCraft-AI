@@ -290,7 +290,7 @@ const RecipeGeneratorPage = () => {
         <Modal
           isOpen={isDetailOpen}
           onClose={() => setIsDetailOpen(false)}
-          title={generatedRecipe.title}
+          title={generatedRecipe.title || generatedRecipe.name || generatedRecipe.recipeName || generatedRecipe.dishName || 'Untitled Recipe'}
           size="lg"
         >
           <div className="space-y-6">

@@ -38,6 +38,8 @@ const RecipeCard = ({
     return dietBadgeColors[diet] || 'bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
   };
 
+  const displayTitle = title || recipe.name || recipe.recipeName || recipe.dishName || 'Untitled Recipe';
+
   return (
     <div className={`group flex flex-col zero-card rounded-[2rem] overflow-hidden h-full ${className}`}>
       {/* Visual Header Banner */}
@@ -95,7 +97,7 @@ const RecipeCard = ({
           {/* Title and Diet Badge */}
           <div className="flex items-start justify-between gap-4 mb-3">
             <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-              {title}
+              {displayTitle}
             </h4>
             <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full shrink-0 ${getDietBadge(dietType)}`}>
               {dietType}
